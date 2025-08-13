@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 type ToolCardProps = {
   title: string;
@@ -26,12 +27,12 @@ export function ToolCard({
         <p className="font-bold text-xl mb-1.5">{title}</p>
         <p className="text-gray-600">{description}</p>
       </div>
-      <a
-        className="p-2 rounded-xl bg-gray-800 text-gray-100 text-center hover:bg-gray-900"
-        href={linkPath}
+      <Link
+        className="p-2 rounded-xl bg-gradient-to-r from-pink-600 to-red-500 text-white text-center hover:from-pink-700 hover:to-red-600"
+        to={linkPath}
       >
         Continue
-      </a>
+      </Link>
     </div>
   );
 }

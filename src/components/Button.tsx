@@ -3,9 +3,10 @@ import type { ReactNode } from "react";
 type ButtonProps = {
   children: ReactNode;
   size: "sm" | "md" | "lg";
+  onPress: () => void;
 };
 
-export function Button({ children, size }: ButtonProps) {
+export function Button({ children, size, onPress }: ButtonProps) {
   const padding = () => {
     switch (size) {
       case "sm":
@@ -20,7 +21,8 @@ export function Button({ children, size }: ButtonProps) {
   };
   return (
     <button
-      className={`rounded-lg ${padding()} px-3 text-white font-medium cursor-pointer transition-colors bg-gradient-to-r from-pink-600 to-red-500 hover:from-pink-700 hover:to-red-600`}
+      onClick={onPress}
+      className={`w-full rounded-xl ${padding()} px-3 text-white text-lg font-semibold cursor-pointer transition-colors bg-gradient-to-r from-pink-600 to-red-500 hover:from-pink-700 hover:to-red-600`}
     >
       {children}
     </button>
