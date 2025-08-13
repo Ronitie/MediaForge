@@ -23,7 +23,7 @@ export default function ImageConverterPage() {
   const { files } = useFileContext();
   const decoderWasmPath = new Map();
   const encoderWasmPath = new Map();
-  const codecLoader = new Map<string, ICodecModule>();
+  const codecLoader = new Map<string, ICodecModule | any>();
 
   //decoder wasm paths
   decoderWasmPath.set("jpeg", "/wasm/dist/mozjpeg.wasm");
@@ -58,7 +58,7 @@ export default function ImageConverterPage() {
 
     const data = new Uint8Array(await file.arrayBuffer());
 
-    const imageData = decoder.decode(data);
+    const imageData = decoder!.decode(data);
     const imageDataLike = {
       width: imageData.width,
       height: imageData.height,
