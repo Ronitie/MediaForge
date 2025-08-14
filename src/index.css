@@ -5,3 +5,57 @@ html {
 body {
     background-color: rgb(250, 250, 250);
 }
+
+.img-card-appear {
+    animation: appear 0.4s ease-out;
+}
+
+.transition-width {
+    transition: width 0.5s ease-out;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    70% {
+        opacity: 0.95;
+        transform: scale(1) translateY(-3px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.loader {
+    width: 28px;
+    margin: 0 auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 3px solid #0000;
+    border-top-color: #fff;
+    position: relative;
+    animation: l24 1s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.loader:before,
+.loader:after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: inherit;
+    animation: inherit;
+    animation-duration: 2s;
+}
+.loader:after {
+    animation-duration: 4s;
+}
+@keyframes l24 {
+    100% {
+        transform: rotate(1turn);
+    }
+}

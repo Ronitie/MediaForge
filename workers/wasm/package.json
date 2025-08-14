@@ -1,0 +1,21 @@
+{
+  "name": "imgconvert",
+  "type": "module",
+  "description": "Convert images in the browser using WebAssembly",
+  "version": "0.1.0",
+  "license": "SEE LICENSE IN ../LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomvoet/wasm-convert"
+  },
+  "files": [
+    "imgconvert_bg.wasm",
+    "imgconvert.js",
+    "imgconvert.d.ts"
+  ],
+  "main": "imgconvert.js",
+  "types": "imgconvert.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

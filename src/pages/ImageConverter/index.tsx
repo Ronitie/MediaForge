@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useFileContext } from "../../context/useFileContext";
 import { avif, heic, jpeg, jxl, png, webp, type ICodecModule } from "icodec";
 import { OutputImageCard } from "../../components/ui/OutputImageCard";
+import { ProgressBar } from "../../components/ui/ProgressBar";
 
 type OutputImageDataType = {
   filename: string;
@@ -20,26 +21,30 @@ export default function ImageConverterPage() {
     [],
   );
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState({
+    total: 0,
+    completed: 0,
+  });
   const { files } = useFileContext();
   const decoderWasmPath = new Map();
   const encoderWasmPath = new Map();
   const codecLoader = new Map<string, ICodecModule | any>();
 
   //decoder wasm paths
-  decoderWasmPath.set("jpeg", "/wasm/dist/mozjpeg.wasm");
-  decoderWasmPath.set("png", "/wasm/dist/pngquant_bg.wasm");
-  decoderWasmPath.set("webp", "/wasm/dist/webp-dec.wasm");
-  decoderWasmPath.set("avif", "/wasm/dist/avif-dec.wasm");
-  decoderWasmPath.set("heic", "/wasm/dist/heic-dec.wasm");
-  decoderWasmPath.set("jxl", "/wasm/dist/jxl-dec.wasm");
+  decoderWasmPath.set("jpeg", "/wasm/icodec/mozjpeg.wasm");
+  decoderWasmPath.set("png", "/wasm/icodec/pngquant_bg.wasm");
+  decoderWasmPath.set("webp", "/wasm/icodec/webp-dec.wasm");
+  decoderWasmPath.set("avif", "/wasm/icodec/avif-dec.wasm");
+  decoderWasmPath.set("heic", "/wasm/icodec/heic-dec.wasm");
+  decoderWasmPath.set("jxl", "/wasm/icodec/jxl-dec.wasm");
 
   //encoder wasm paths
-  encoderWasmPath.set("jpeg", "/wasm/dist/mozjpeg.wasm");
-  encoderWasmPath.set("png", "/wasm/dist/pngquant_bg.wasm");
-  encoderWasmPath.set("webp", "/wasm/dist/webp-enc.wasm");
-  encoderWasmPath.set("avif", "/wasm/dist/avif-enc.wasm");
-  encoderWasmPath.set("heic", "/wasm/dist/heic-enc.wasm");
-  encoderWasmPath.set("jxl", "/wasm/dist/jxl-enc.wasm");
+  encoderWasmPath.set("jpeg", "/wasm/icodec/mozjpeg.wasm");
+  encoderWasmPath.set("png", "/wasm/icodec/pngquant_bg.wasm");
+  encoderWasmPath.set("webp", "/wasm/icodec/webp-enc.wasm");
+  encoderWasmPath.set("avif", "/wasm/icodec/avif-enc.wasm");
+  encoderWasmPath.set("heic", "/wasm/icodec/heic-enc.wasm");
+  encoderWasmPath.set("jxl", "/wasm/icodec/jxl-enc.wasm");
 
   //codec loader maps
   codecLoader.set("jpeg", jpeg);
@@ -79,23 +84,28 @@ export default function ImageConverterPage() {
   }
 
   const handleConvertFiles = async () => {
-    const convertedImgData: OutputImageDataType[] = [];
     setLoading(true);
+    const total = files.length;
+    let completed = 0;
+    setProgress({ total: total, completed: 0 });
     for (const file of files) {
       try {
         const url = await convertImageFile(
           file,
           codecLoader.get(selectedOption) || jpeg,
         );
-        convertedImgData.push({ filename: file.name, url: url });
+        setOutputImageData((prev) => [
+          ...prev,
+          { filename: file.name, url: url },
+        ]);
+        completed++;
+        setProgress({ total: total, completed: completed });
       } catch (err) {
         console.error(err);
-      } finally {
-        setLoading(false);
       }
     }
-
-    setOutputImageData(convertedImgData);
+    setLoading(false);
+    //setOutputImageData(convertedImgData);
   };
 
   return (
@@ -122,9 +132,16 @@ export default function ImageConverterPage() {
 
       <UploadCard />
       <FormatSelectorCard onChangeAction={(id) => setSelectedOption(id)} />
-      <Button size="lg" onPress={handleConvertFiles}>
-        {loading ? "Converting..." : "Convert"}
+      <p className="mb-3 text-sm text-gray-500">
+        <span className="font-medium">Note:</span> Larger images may take longer
+        time to process depending on your device power
+      </p>
+      <Button size="lg" onPress={handleConvertFiles} loading={loading}>
+        Convert
       </Button>
+      {loading && (
+        <ProgressBar total={progress.total} completed={progress.completed} />
+      )}
       <div className="flex flex-col gap-2 mt-2">
         {outputImageData.map((item, index) => (
           <OutputImageCard

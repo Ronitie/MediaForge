@@ -3,9 +3,11 @@ import { useFileContext } from "../../context/useFileContext";
 import { ImageSolidIcon } from "../../svgs/MediaIcons";
 import { UploadIcon } from "../../svgs/UploadIcon";
 import { TrashIcon } from "../../svgs/TrashIcon";
+import { createImagePreview } from "../../helpers/createImgPreview";
 
 export function UploadCard() {
   const { files, setFiles } = useFileContext();
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -19,7 +21,7 @@ export function UploadCard() {
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -28,19 +30,31 @@ export function UploadCard() {
       file.type.startsWith("image/"),
     );
     setFiles([...files, ...droppedImages]);
+    const previews = await Promise.all(
+      droppedImages.map((file) => createImagePreview(file)),
+    );
+
+    setPreviewUrls((prev) => [...prev, ...previews]);
   }, []);
 
-  const handleChooseImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChooseImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files).filter((file) =>
         file.type.startsWith("image/"),
       );
       setFiles([...files, ...selectedFiles]);
+      const previews = await Promise.all(
+        selectedFiles.map((file) => createImagePreview(file)),
+      );
+
+      setPreviewUrls((prev) => [...prev, ...previews]);
     }
   };
 
   const handleRemove = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
+    URL.revokeObjectURL(previewUrls[index]);
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   const formatFileSize = (bytes: number) => {
@@ -54,13 +68,10 @@ export function UploadCard() {
   };
 
   const handleClearAll = () => {
+    previewUrls.forEach((url) => URL.revokeObjectURL(url));
     setFiles([]);
+    setPreviewUrls([]);
   };
-
-  function getImgURL(file: File) {
-    const url = URL.createObjectURL(file);
-    return url;
-  }
 
   return (
     <>
@@ -109,11 +120,10 @@ export function UploadCard() {
                 className="flex items-center justify-between gap-2 p-2 border border-gray-300 bg-gray-50 rounded-lg"
               >
                 <div className="flex items-center gap-2 max-w-10/12">
-                  <div className="min-h-14 max-h-14 flex items-center rounded-md overflow-hidden">
+                  <div className="size-14 flex items-center rounded-md overflow-hidden">
                     <img
-                      src={getImgURL(file)}
-                      width={56}
-                      className="object-contain"
+                      src={previewUrls[index]}
+                      className="size-14 object-cover"
                     />
                   </div>
                   <div className="overflow-hidden">

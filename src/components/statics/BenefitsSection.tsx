@@ -46,6 +46,77 @@ export function BenefitsSection() {
             </div>
           ))}
         </div>
+        <div className="bg-gray-50 py-16 px-6 md:px-12">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-lg text-gray-700 mb-8">
+              We believe file conversion should be
+              <span className="font-semibold">
+                {" "}
+                instant, private, and hassle-free{" "}
+              </span>
+              . Unlike traditional websites that upload your files to a remote
+              server, our tools run{" "}
+              <span className="font-semibold">entirely in your browser </span>
+              using cutting-edge{" "}
+              <span className="font-semibold"> WebAssembly technology</span>.
+            </p>
+
+            <ul className="text-left max-w-2xl mx-auto text-gray-700 space-y-4">
+              <li className="flex items-start">
+                <span className="text-green-500 font-bold mr-2">✓</span>
+                <span>
+                  <span className="font-semibold">
+                    Zero uploads. Zero downloads.
+                  </span>{" "}
+                  Just results—fast.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 font-bold mr-2">✓</span>
+                <span>
+                  <span className="font-semibold">Complete privacy.</span> Your
+                  files never leave your device.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-green-500 font-bold mr-2">✓</span>
+                <span>
+                  <span className="font-semibold">No waiting.</span> Conversions
+                  happen instantly, without internet delays.
+                </span>
+              </li>
+            </ul>
+
+            <p className="text-lg text-gray-700 mt-8">
+              Whether you need to{" "}
+              <span className="font-semibold">
+                convert, compress, or optimize
+              </span>{" "}
+              images, PDFs, or other formats, we make it happen{" "}
+              <span className="font-semibold">right here, right now</span>—with
+              the
+              <span className="font-semibold"> speed of native apps</span> and
+              the convenience of the web.
+            </p>
+
+            <div className="bg-white rounded-lg shadow-md p-6 mt-10 max-w-2xl mx-auto">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">No More:</h3>
+              <ul className="list-disc list-inside text-gray-700 space-y-2">
+                <li>Worrying about sensitive files being stored somewhere.</li>
+                <li>Waiting minutes for uploads and downloads.</li>
+                <li>Being limited by slow internet.</li>
+              </ul>
+            </div>
+
+            <p className="text-xl font-semibold text-gray-900 mt-10">
+              We’re here to give you{" "}
+              <span className="text-green-500">
+                control, speed, and peace of mind
+              </span>
+              —all in one click.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
