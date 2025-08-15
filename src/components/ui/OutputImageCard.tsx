@@ -13,6 +13,7 @@ export function OutputImageCard({
   filetype,
 }: OutputImageCardProps) {
   const [imgFile, setImgFile] = useState<File | undefined>();
+
   async function blobToFile() {
     const res = await fetch(imgSrc);
     const blob = await res.blob();
@@ -21,7 +22,7 @@ export function OutputImageCard({
       "-converted." +
       filetype.substring(6);
 
-    return new File([blob], imgFileName, { type: filetype.substring(6) });
+    return new File([blob], imgFileName, { type: filetype });
   }
 
   useEffect(() => {
@@ -57,7 +58,12 @@ export function OutputImageCard({
       </div>
       <a
         href={imgSrc}
-        download={imgFile?.name}
+        download={
+          filename.slice(0, filename.lastIndexOf(".")) +
+          "converted" +
+          "." +
+          filetype.substring(6)
+        }
         className="p-2 mr-1 hover:bg-gray-200 rounded-sm cursor-pointer"
       >
         <DownloadIcon />

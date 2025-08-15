@@ -27,6 +27,7 @@ export default function ImageConverterPageRS() {
     total: 0,
     completed: 0,
   });
+  //const [completed, setCompleted] = useState(0);
 
   useEffect(() => {
     workerRef.current = new Worker(
@@ -34,11 +35,11 @@ export default function ImageConverterPageRS() {
       { type: "module" },
     );
     workerRef.current.onmessage = (e) => {
-      const { type, filename, filetype, p, m, out } = e.data;
-      if (type === "progress") {
-        setProgress({ total: 10, completed: p });
-        console.log(`Progress: ${m}`);
-      }
+      const { type, filename, filetype, out } = e.data;
+      // if (type === "progress") {
+      //   setProgress({ total: files.length, completed:  });
+      //   console.log(`Progress: ${m}`);
+      // }
       if (type === "done") {
         const blob = new Blob([out], { type: selectedOption });
         const url = URL.createObjectURL(blob);
@@ -46,8 +47,10 @@ export default function ImageConverterPageRS() {
           ...prev,
           { filename, type: filetype, url },
         ]);
+        //setCompleted((prev) => prev++);
       }
     };
+
     return () => workerRef.current?.terminate();
   }, []);
 
@@ -59,6 +62,7 @@ export default function ImageConverterPageRS() {
 
   const handleConvertFiles = async () => {
     setLoading(true);
+    let completed = 0;
     for (const file of files) {
       const filename = file.name;
       const arrayBuffer = await file.arrayBuffer();
@@ -73,6 +77,8 @@ export default function ImageConverterPageRS() {
         dst: targetType,
         settings: null,
       });
+      completed++;
+      setProgress({ total: files.length, completed: completed });
     }
     setLoading(false);
   };
@@ -108,7 +114,9 @@ export default function ImageConverterPageRS() {
       <Button size="lg" onPress={handleConvertFiles} loading={loading}>
         Convert
       </Button>
-      {loading && <ProgressBar completed={progress.completed} />}
+      {loading && (
+        <ProgressBar total={progress.total} completed={progress.completed} />
+      )}
       <div className="flex flex-col gap-2 mt-2">
         {outputImageData.map((item, index) => (
           <OutputImageCard

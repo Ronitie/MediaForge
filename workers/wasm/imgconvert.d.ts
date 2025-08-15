@@ -1,14 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-/**
- * Convert an image from one format to another.
- * # Arguments
- * * `file` - The image file to convert.
- * * `src_type` - The MIME type of the source image.
- * * `target_type` - The MIME type of the target image.
- * * `cb` - A callback function to report progress.
- * * `convert_settings` - Settings for the conversion.
- */
 export function convertImage(file: Uint8Array, src_type: string, target_type: string, cb: Function, convert_settings: any): Uint8Array;
 /**
  * Chroma subsampling format
