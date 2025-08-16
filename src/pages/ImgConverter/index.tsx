@@ -15,7 +15,7 @@ type OutputImageDataType = {
   url: string;
 };
 
-export default function ImageConverterPageRS() {
+export default function ImageConverterPage() {
   const { files } = useFileContext();
   const workerRef = useRef<Worker | null>(null);
   const [selectedOption, setSelectedOption] = useState("image/jpeg");
@@ -27,27 +27,35 @@ export default function ImageConverterPageRS() {
     total: 0,
     completed: 0,
   });
-  //const [completed, setCompleted] = useState(0);
 
   useEffect(() => {
     workerRef.current = new Worker(
       new URL("../../../workers/imgConvertWorker", import.meta.url),
       { type: "module" },
     );
+
     workerRef.current.onmessage = (e) => {
       const { type, filename, filetype, out } = e.data;
-      // if (type === "progress") {
-      //   setProgress({ total: files.length, completed:  });
-      //   console.log(`Progress: ${m}`);
-      // }
+
+      if (type === "progress") {
+        setLoading(true);
+      }
+
       if (type === "done") {
         const blob = new Blob([out], { type: selectedOption });
         const url = URL.createObjectURL(blob);
+
         setOutputImageData((prev) => [
           ...prev,
           { filename, type: filetype, url },
         ]);
-        //setCompleted((prev) => prev++);
+
+        // ✅ increment progress when file is actually done
+        setLoading(false);
+        setProgress((prev) => ({
+          total: prev.total,
+          completed: prev.completed + 1,
+        }));
       }
     };
 
@@ -56,13 +64,15 @@ export default function ImageConverterPageRS() {
 
   useEffect(() => {
     return () => {
+      //setFiles([]);
       outputImageData.forEach((item) => URL.revokeObjectURL(item.url));
     };
-  }, [outputImageData]);
+  }, []);
 
   const handleConvertFiles = async () => {
     setLoading(true);
-    let completed = 0;
+    setProgress({ total: files.length, completed: 0 });
+    //setOutputImageData([]);
     for (const file of files) {
       const filename = file.name;
       const arrayBuffer = await file.arrayBuffer();
@@ -77,10 +87,8 @@ export default function ImageConverterPageRS() {
         dst: targetType,
         settings: null,
       });
-      completed++;
-      setProgress({ total: files.length, completed: completed });
     }
-    setLoading(false);
+    //setLoading(false);
   };
 
   return (
@@ -98,7 +106,7 @@ export default function ImageConverterPageRS() {
               Image Converter
             </h1>
             <p className="text-gray-600">
-              Convert between JPEG, PNG, WebP, AVIF, HEIC and more formats
+              Convert between JPEG, PNG, WebP, AVIF, tiff, gif and more formats
               locally in your browser and almost instantly
             </p>
           </div>

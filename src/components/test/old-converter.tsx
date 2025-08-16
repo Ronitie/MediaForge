@@ -55,11 +55,11 @@
 //   codecLoader.set("jxl", jxl);
 
 //   async function convertImageFile(file: File, codec: ICodecModule) {
-//     const inputImageFormat = file.type.substring(6);
-//     const decoder = codecLoader.get(inputImageFormat);
+//     //const inputImageFormat = file.type.substring(6);
+//     const decoder = codecLoader.get("jpeg");
 
-//     await decoder?.loadDecoder(decoderWasmPath.get(inputImageFormat));
-//     await codec.loadEncoder(encoderWasmPath.get(selectedOption));
+//     await decoder?.loadDecoder(decoderWasmPath.get("jpeg"));
+//     await codec.loadEncoder(encoderWasmPath.get("png"));
 
 //     const data = new Uint8Array(await file.arrayBuffer());
 
@@ -90,10 +90,7 @@
 //     setProgress({ total: total, completed: 0 });
 //     for (const file of files) {
 //       try {
-//         const url = await convertImageFile(
-//           file,
-//           codecLoader.get(selectedOption) || jpeg,
-//         );
+//         const url = await convertImageFile(file, png);
 //         setOutputImageData((prev) => [
 //           ...prev,
 //           { filename: file.name, url: url },
@@ -140,7 +137,7 @@
 //         Convert
 //       </Button>
 //       {loading && (
-//         <ProgressBar completed={progress.completed} />
+//         <ProgressBar total={files.length} completed={progress.completed} />
 //       )}
 //       <div className="flex flex-col gap-2 mt-2">
 //         {outputImageData.map((item, index) => (
@@ -148,6 +145,7 @@
 //             key={index}
 //             imgSrc={item.url}
 //             filename={item.filename}
+//             filetype="image/png"
 //           />
 //         ))}
 //       </div>
